@@ -60,7 +60,7 @@ body {
 }
 
 .logo {
-    width: 25px;
+    width: 45px;
 }
 
 .logo img{
@@ -203,7 +203,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 80px;
+    font-size: 30px;
     margin-bottom: 16px;
 }
 
@@ -364,6 +364,11 @@ hr {
 }
 
 /* QUOTE */
+/*.story{*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*}*/
+
 .quote {
     max-width: 800px;
     margin: 0 auto;
@@ -384,6 +389,21 @@ hr {
 .quote small {
     color: var(--primary);
     font-weight: 600;
+}
+
+
+
+.story-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+}
+
+.hana-girl {
+    width: 250px;
+    height: auto;
+    object-fit: contain;
 }
 
 /* CTA BLOCK */
@@ -623,6 +643,15 @@ footer ul {
 
 /* RESPONSIVE */
 @media (max-width: 768px) {
+
+    .story-wrapper {
+        flex-direction: column;
+    }
+
+    .hana-girl {
+        width: 180px;
+    }
+
     .menu-btn {
         display: block;
     }
