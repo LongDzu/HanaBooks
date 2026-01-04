@@ -2,83 +2,229 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Flashcard Từ Vựng</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flashcard Từ Vựng - Hana</title>
 
 <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 
 <style>
-body {
-    font-family: Arial;
-    background: #f4f6f8;
+* {
     margin: 0;
-    padding: 20px;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-h2 { text-align: center; }
+:root {
+    --primary: #ff9966;
+    --primary-dark: #ff7733;
+    --primary-light: #ffb399;
+    --secondary: #ffd699;
+    --bg: #fff9f5;
+    --text: #5a3a2a;
+    --border: #ffe4cc;
+    --shadow: rgba(255, 119, 51, 0.1);
+}
 
-.controls {
-    margin-bottom: 15px;
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 0;
+    margin: 0;
+}
+
+/* MAIN NAVBAR (from index.html) */
+.main-nav {
+    background: white;
+    box-shadow: 0 2px 8px var(--shadow);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 3px solid var(--primary-light);
+}
+
+.main-nav-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    flex-wrap: wrap;
+}
+
+.main-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 16px 20px;
+}
+
+.main-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: var(--text);
+    font-weight: 700;
+    font-size: 24px;
+}
+
+.main-logo {
+    width: 45px;
+}
+
+.main-logo img {
+    width: 100%;
+}
+
+.main-brand small {
+    display: block;
+    font-size: 12px;
+    font-weight: 400;
+    color: #999;
+}
+
+.main-menu-btn {
+    display: none;
+    background: var(--primary);
+    border: none;
+    font-size: 24px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    color: white;
+}
+
+#mainNavMenu {
+    display: flex;
+    list-style: none;
+    gap: 24px;
+    align-items: center;
+}
+
+#mainNavMenu a {
+    text-decoration: none;
+    color: var(--text);
+    font-weight: 500;
+    transition: color 0.2s;
+    padding: 8px 0;
+}
+
+#mainNavMenu a:hover {
+    color: var(--primary);
+}
+
+/* #mainNavMenu a.active-nav {
+    color: var(--primary);
+    border-bottom: 2px solid var(--primary);
+} */
+
+/* HEADER */
+.header {
+    /* background: white;
+    box-shadow: 0 2px 8px var(--shadow);
+    border-bottom: 3px solid var(--primary-light); */
+    padding: 20px 0;
+    margin-bottom: 40px;
+}
+
+.header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
     text-align: center;
 }
 
-select, button {
-    padding: 6px 10px;
-    font-size: 14px;
-    margin: 0 5px;
+h2 {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 8px;
 }
 
-/* layout */
-.container {
+h2 span {
+    color: var(--primary);
+}
+
+.subtitle {
+    font-size: 16px;
+    color: #8a6a5a;
+}
+
+/* CONTROLS */
+.controls {
+    max-width: 1200px;
+    margin: 0 auto 30px;
+    padding: 0 20px;
     display: flex;
-    gap: 20px;
-}
-
-/* list */
-.list {
-    width: 40%;
-    max-height: 500px;
-    overflow-y: auto;
-    background: white;
-    border-radius: 8px;
-    padding: 10px;
-}
-
-.word {
-    display: flex;
+    justify-content: center;
     align-items: center;
-    gap: 10px;
-    padding: 10px 8px;
-    border-bottom: 1px solid #eee;
-    cursor: pointer;
+    gap: 16px;
+    flex-wrap: wrap;
 }
 
-.word:hover { background: #e8f0ff; }
-
-.left { font-weight: bold; flex: 1; }
-.right { flex: 1; text-align: right; color: #555; }
-
-.audio-btn {
-    border: none;
-    background: none;
-    font-size: 18px;
+select, button {
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 12px 20px;
+    border-radius: 12px;
+    border: 2px solid var(--border);
+    background: white;
+    color: var(--text);
     cursor: pointer;
+    transition: all 0.3s;
 }
 
-/* flashcard */
+select:hover, button:hover {
+    border-color: var(--primary);
+    background: var(--primary-light);
+    color: white;
+}
+
+select:focus, button:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(255, 119, 51, 0.1);
+}
+
+#reverseBtn {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+#reverseBtn:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--shadow);
+}
+
+/* CONTAINER */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+/* FLASHCARD SECTION */
 .flashcard {
-    width: 60%;
+    width: 100%;
     perspective: 1000px;
     position: relative;
 }
 
 .card {
-    height: 250px;
+    height: 350px;
     background: white;
-    border-radius: 12px;
+    border-radius: 20px;
     position: relative;
     transform-style: preserve-3d;
     transition: transform 0.6s;
     cursor: pointer;
+    box-shadow: 0 8px 24px var(--shadow);
+    border: 3px solid var(--border);
 }
 
 .card.flipped {
@@ -93,88 +239,371 @@ select, button {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 30px;
-    font-weight: bold;
+    font-size: 48px;
+    font-weight: 800;
+    border-radius: 20px;
+    padding: 40px;
+    text-align: center;
 }
 
 .front {
-    border: 2px solid #007bff;
+    background: white;
+    color: var(--text);
 }
 
 .back {
-    background: #007bff;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
     color: white;
     transform: rotateY(180deg);
 }
 
-/* 🔊 AUDIO FIX */
+/* AUDIO BUTTON */
 .card-audio {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 15px;
+    right: 15px;
     z-index: 20;
-
     border: none;
-    background: rgba(255,255,255,0.95);
+    background: var(--secondary);
     border-radius: 50%;
-    width: 38px;
-    height: 38px;
-    font-size: 18px;
+    width: 50px;
+    height: 50px;
+    font-size: 24px;
     cursor: pointer;
-
-    /* 🔥 FIX QUAN TRỌNG */
-    transform: translateZ(50px) rotateY(0deg);
-    backface-visibility: visible;
+    transition: all 0.3s;
+    box-shadow: 0 4px 12px var(--shadow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.card-audio:hover {
-    background: #e8f0ff;
+/* .card-audio:hover {
+    background: var(--primary);
+    transform: scale(1.1);
+} */
+.back-audio:hover {
+    background: var(--primary);
+    /* transform: scale(1.1); */
+    border-color: var(--primary);
+    background: var(--bg);
+    color: white;
+    transform: rotateY(180deg) translateZ(1px) scale(1.1);
+    left: 15px;
 }
 
-/* nav */
+.front-audio:hover{
+    background: var(--primary);
+    transform: scale(1.1);
+    
+
+}
+
+
+
+.front-audio { 
+    transform: translateZ(1px);
+}
+
+.back-audio  { 
+    transform: rotateY(180deg) translateZ(1px);
+    left: 15px;
+    /* right: 15px; */
+}
+
+
+/* NAVIGATION */
 .nav {
     position: absolute;
-    bottom: -45px;
+    bottom: -60px;
     width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 0 20px;
 }
 
-.counter { font-weight: bold; }
+.nav button {
+    background: var(--primary);
+    color: white;
+    border: 2px solid var(--primary);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    font-size: 20px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
 
-.front-audio { transform: translateZ(50px); }
-.back-audio  { transform: rotateY(180deg) translateZ(50px); }
+.nav button:hover {
+    background: var(--primary-dark);
+    transform: scale(1.1);
+}
 
+.counter {
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--text);
+    background: white;
+    padding: 12px 24px;
+    border-radius: 20px;
+    border: 2px solid var(--border);
+    box-shadow: 0 2px 8px var(--shadow);
+}
 
+/* WORD LIST */
+.list-header {
+    text-align: center;
+    margin: 40px 0px 25px 0px;
+}
+
+.list-header h3 {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 8px;
+}
+
+.list-header p {
+    font-size: 14px;
+    color: #8a6a5a;
+}
+
+.list {
+    width: 100%;
+    max-height: 400px;
+    overflow-y: auto;
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 4px 16px var(--shadow);
+    border: 2px solid var(--border);
+}
+
+.list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.list::-webkit-scrollbar-track {
+    background: var(--bg);
+    border-radius: 10px;
+}
+
+.list::-webkit-scrollbar-thumb {
+    background: var(--primary-light);
+    border-radius: 10px;
+}
+
+.list::-webkit-scrollbar-thumb:hover {
+    background: var(--primary);
+}
+
+.word {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    border-radius: 12px;
+    border-bottom: 2px solid var(--border);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.word:last-child {
+    border-bottom: none;
+}
+
+.word:hover {
+    background: var(--bg);
+    transform: translateX(8px);
+}
+
+.word.active {
+    background: var(--secondary);
+    border-color: var(--primary);
+}
+
+.left {
+    font-weight: 700;
+    flex: 0.2;
+    font-size: 18px;
+    color: var(--text);
+}
+
+.right {
+    flex: 1;
+    text-align: right;
+    color: #8a6a5a;
+    font-size: 16px;
+}
+
+.audio-btn {
+    border: none;
+    background: var(--primary-light);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.3s;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.audio-btn:hover {
+    background: var(--primary);
+    transform: scale(1.15);
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .menu-btn {
+        display: block;
+    }
+
+    #navMenu {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 2px solid var(--border);
+    }
+
+    #navMenu.active {
+        display: flex;
+    }
+
+    .nav-wrap {
+        position: relative;
+    }
+
+    h2 {
+        font-size: 24px;
+    }
+
+    .controls {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    select, button {
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .card {
+        height: 280px;
+    }
+
+    .face {
+        font-size: 32px;
+        padding: 30px;
+    }
+
+    .card-audio {
+        width: 45px;
+        height: 45px;
+        font-size: 20px;
+        top: 15px;
+        right: 15px;
+    }
+
+    .nav {
+        bottom: -55px;
+    }
+
+    .counter {
+        font-size: 16px;
+        padding: 10px 20px;
+    }
+
+    .list {
+        max-height: 300px;
+    }
+
+    .word {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .left, .right {
+        flex: 100%;
+        text-align: left;
+        font-size: 16px;
+    }
+}
+
+/* BADGE */
+.badge {
+    display: inline-block;
+    background: var(--secondary);
+    color: var(--text);
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
 </style>
 </head>
 
 <body>
 
-<h2>Flashcard Từ Vựng</h2>
+<!-- NAVBAR -->
+<nav class="main-nav">
+    <div class="main-container main-nav-wrap">
+        <a class="main-brand" href="/index.html">
+            <div class="main-logo"><img src="img/logoHanaBook.jpg" alt="Hana Logo"></div>
+            <div>
+                <small>Sách học Anh-Hàn-Việt cho trẻ em</small>
+            </div>
+        </a>
+
+        <button class="main-menu-btn" aria-label="Mở menu" id="mainMenuBtn">☰</button>
+
+        <ul id="mainNavMenu">
+            <li><a href="/index.html#trang-chu">Trang chủ</a></li>
+            <li><a href="/index.html#san-pham">Sản phẩm</a></li>
+            <li><a href="/index.html#loi-ich">Lợi ích</a></li>
+            <li><a href="/index.html#lien-he">Liên hệ</a></li>
+            <li><a href="/flashcard.html" class="active-nav">Flashcard</a></li>
+        </ul>
+    </div>
+</nav>
+
+<div class="header">
+    <div class="header-content">
+        <span class="badge">🌟 Học vui, nhớ lâu</span>
+        <h2><span>Hana</span> Flashcard</h2>
+        <p class="subtitle">Học từ vựng đa ngôn ngữ hiệu quả với phương pháp flashcard</p>
+    </div>
+</div>
 
 <div class="controls">
     <select id="mode">
-        <option value="en-ko">Anh → Hàn</option>
-        <option value="ko-vi">Hàn → Việt</option>
-        <option value="en-vi">Anh → Việt</option>
+        <option value="en-ko">English → Korea</option>
+        <option value="en-vi">English → Vietnamese</option>
+        <option value="ko-vi">Korea → Vietnamese</option>
     </select>
-    <button id="reverseBtn">Đảo chiều</button>
+    <button id="reverseBtn">🔄 Đảo chiều</button>
 </div>
 
 <div class="container">
-    <div class="list" id="wordList"></div>
-
+    <!-- FLASHCARD SECTION (ở trên) -->
     <div class="flashcard">
         <div class="card" id="card">
-    <button class="card-audio front-audio">🔊</button>
-    <button class="card-audio back-audio">🔊</button>
+            <button class="card-audio front-audio">🔊</button>
+            <button class="card-audio back-audio">🔊</button>
 
-    <div class="face front" id="frontText">Loading...</div>
-    <div class="face back" id="backText"></div>
-</div>
-
+            <div class="face front" id="frontText">Loading...</div>
+            <div class="face back" id="backText"></div>
+        </div>
 
         <div class="nav">
             <button id="prevBtn">&lt;</button>
@@ -182,8 +611,28 @@ select, button {
             <button id="nextBtn">&gt;</button>
         </div>
     </div>
+
+    <!-- WORD LIST (ở dưới) -->
+    <div>
+        <div class="list-header">
+            <h3>📚 Danh sách từ vựng</h3>
+            <p>Nhấn vào từ để xem flashcard tương ứng</p>
+        </div>
+        <div class="list" id="wordList"></div>
+    </div>
 </div>
 
 <script src="js/flashcard.js"></script>
+<script>
+// Menu toggle for mobile
+const menuBtn = document.getElementById('menuBtn');
+const navMenu = document.getElementById('navMenu');
+
+if (menuBtn && navMenu) {
+    menuBtn.addEventListener('click', () => {
+        navMenu.classList.toggle('active');
+    });
+}
+</script>
 </body>
 </html>

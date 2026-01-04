@@ -1,18 +1,20 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    /* ================== STATE ================== */
+    /* ========== STATE ========== */
     let vocabList = [];
     let currentIndex = 0;
     let reversed = false;
 
-    /* ================== ELEMENTS ================== */
+    let frontLang = "";
+    let backLang = "";
+
+    /* ========== ELEMENTS ========== */
     const mode = document.getElementById("mode");
     const reverseBtn = document.getElementById("reverseBtn");
     const prevBtn = document.getElementById("prevBtn");
     const nextBtn = document.getElementById("nextBtn");
 
     const wordList = document.getElementById("wordList");
-
     const card = document.getElementById("card");
     const frontText = document.getElementById("frontText");
     const backText = document.getElementById("backText");
@@ -21,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const frontAudio = document.querySelector(".front-audio");
     const backAudio = document.querySelector(".back-audio");
 
-    /* ================== LOAD EXCEL ================== */
+    /* ========== LOAD EXCEL ========== */
     fetch("flashcard.xlsx")
         .then(res => res.arrayBuffer())
         .then(data => {
@@ -35,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-    /* ================== CONTROLS ================== */
+    /* ========== CONTROLS ========== */
     mode.onchange = () => {
         reversed = false;
         showCard(0);
@@ -48,15 +50,10 @@ document.addEventListener("DOMContentLoaded", () => {
         renderList();
     };
 
-    prevBtn.onclick = () => {
-        if (currentIndex > 0) showCard(currentIndex - 1);
-    };
+    prevBtn.onclick = () => currentIndex > 0 && showCard(currentIndex - 1);
+    nextBtn.onclick = () => currentIndex < vocabList.length - 1 && showCard(currentIndex + 1);
 
-    nextBtn.onclick = () => {
-        if (currentIndex < vocabList.length - 1) showCard(currentIndex + 1);
-    };
-
-    /* ================== LIST ================== */
+    /* ========== LIST ========== */
     function renderList() {
         wordList.innerHTML = "";
         const m = mode.value;
@@ -67,18 +64,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const left = document.createElement("div");
             left.className = "left";
-            left.innerText = getFront(item, m);
+            left.innerText = getText(item, "front", m).text;
 
             const right = document.createElement("div");
             right.className = "right";
-            right.innerText = getBack(item, m);
+            right.innerText = getText(item, "back", m).text;
 
             const audioBtn = document.createElement("button");
             audioBtn.className = "audio-btn";
             audioBtn.innerText = "🔊";
             audioBtn.onclick = e => {
                 e.stopPropagation();
-                speak(left.innerText, m);
+                const info = getText(item, "front", m);
+                speak(info.text, info.lang);
             };
 
             row.append(left, audioBtn, right);
@@ -88,66 +86,68 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    /* ================== CARD ================== */
+    /* ========== CARD ========== */
     function showCard(i) {
         currentIndex = i;
         const item = vocabList[i];
         const m = mode.value;
 
-        frontText.innerText = getFront(item, m);
-        backText.innerText = getBack(item, m);
+        const f = getText(item, "front", m);
+        const b = getText(item, "back", m);
+
+        frontText.innerText = f.text;
+        backText.innerText = b.text;
+
+        frontLang = f.lang;
+        backLang = b.lang;
 
         counter.innerText = `${String(i + 1).padStart(2, "0")} / ${vocabList.length}`;
         card.classList.remove("flipped");
     }
 
-    card.onclick = () => {
-        card.classList.toggle("flipped");
-    };
+    card.onclick = () => card.classList.toggle("flipped");
 
-    /* ================== TEXT LOGIC ================== */
-    function getFront(it, m) {
-        if (!reversed) {
-            if (m === "en-ko" || m === "en-vi") return it["Từ vựng tiếng anh"];
-            return it["Từ vựng tiếng hàn"];
-        } else {
-            if (m === "en-ko") return it["Từ vựng tiếng hàn"];
-            return it["Từ vựng tiếng việt"];
-        }
+    /* ========== CORE LOGIC ========== */
+    function getText(item, side, m) {
+        const map = {
+            en: { key: "Từ vựng tiếng anh", lang: "en-US" },
+            ko: { key: "Từ vựng tiếng hàn", lang: "ko-KR" },
+            vi: { key: "Từ vựng tiếng việt", lang: "vi-VN" }
+        };
+
+        let from, to;
+        if (m === "en-ko") [from, to] = ["en", "ko"];
+        if (m === "ko-vi") [from, to] = ["ko", "vi"];
+        if (m === "en-vi") [from, to] = ["en", "vi"];
+
+        const langKey =
+            !reversed
+                ? side === "front" ? from : to
+                : side === "front" ? to : from;
+
+        return {
+            text: item[map[langKey].key],
+            lang: map[langKey].lang
+        };
     }
 
-    function getBack(it, m) {
-        if (!reversed) {
-            if (m === "en-ko") return it["Từ vựng tiếng hàn"];
-            return it["Từ vựng tiếng việt"];
-        } else {
-            if (m === "en-ko") return it["Từ vựng tiếng anh"];
-            return it["Từ vựng tiếng hàn"];
-        }
-    }
-
-    /* ================== AUDIO ================== */
-    function speak(text, m) {
+    /* ========== AUDIO ========== */
+    function speak(text, lang) {
         if (!text) return;
-
         const u = new SpeechSynthesisUtterance(text);
-
-        if (m.includes("en")) u.lang = "en-US";
-        if (m.includes("ko")) u.lang = "ko-KR";
-        if (m.includes("vi")) u.lang = "vi-VN";
-
+        u.lang = lang;
         speechSynthesis.cancel();
         speechSynthesis.speak(u);
     }
 
     frontAudio.onclick = e => {
         e.stopPropagation();
-        speak(frontText.innerText, mode.value);
+        speak(frontText.innerText, frontLang);
     };
 
     backAudio.onclick = e => {
         e.stopPropagation();
-        speak(backText.innerText, mode.value);
+        speak(backText.innerText, backLang);
     };
 
 });
