@@ -33,7 +33,7 @@ body {
     margin: 0;
 }
 
-/* MAIN NAVBAR (from index.html) */
+/* MAIN NAVBAR */
 .main-nav {
     background: white;
     box-shadow: 0 2px 8px var(--shadow);
@@ -112,16 +112,13 @@ body {
     color: var(--primary);
 }
 
-/* #mainNavMenu a.active-nav {
+#mainNavMenu a.active-nav {
     color: var(--primary);
     border-bottom: 2px solid var(--primary);
-} */
+}
 
 /* HEADER */
 .header {
-    /* background: white;
-    box-shadow: 0 2px 8px var(--shadow);
-    border-bottom: 3px solid var(--primary-light); */
     padding: 20px 0;
     margin-bottom: 40px;
 }
@@ -200,7 +197,7 @@ select:focus, button:focus {
 
 /* CONTAINER */
 .container {
-    max-width: 1200px;
+    max-width: 1000px;
     margin: 0 auto;
     padding: 0 20px 60px;
     display: flex;
@@ -208,11 +205,54 @@ select:focus, button:focus {
     gap: 40px;
 }
 
+/* MODE BUTTONS */
+.mode-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.mode-btn {
+    background: white;
+    border: 2px solid var(--border);
+    color: var(--text);
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.mode-btn:hover {
+    border-color: var(--primary);
+    background: var(--primary-light);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.mode-btn.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+    box-shadow: 0 4px 12px var(--shadow);
+}
+
+.mode-btn .icon {
+    font-size: 20px;
+}
+
 /* FLASHCARD SECTION */
 .flashcard {
     width: 100%;
     perspective: 1000px;
     position: relative;
+    overflow: hidden;
 }
 
 .card {
@@ -229,6 +269,67 @@ select:focus, button:focus {
 
 .card.flipped {
     transform: rotateY(180deg);
+}
+
+/* Slide animations for navigation */
+.card.slide-out-left {
+    animation: slideOutLeft 0.4s ease-out forwards;
+}
+
+.card.slide-out-right {
+    animation: slideOutRight 0.4s ease-out forwards;
+}
+
+.card.slide-in-left {
+    animation: slideInLeft 0.4s ease-out forwards;
+}
+
+.card.slide-in-right {
+    animation: slideInRight 0.4s ease-out forwards;
+}
+
+@keyframes slideOutLeft {
+    from {
+        transform: translateX(0) scale(1);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(-120%) scale(0.8);
+        opacity: 0;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0) scale(1);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(120%) scale(0.8);
+        opacity: 0;
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        transform: translateX(-120%) scale(0.8);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0) scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(120%) scale(0.8);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0) scale(1);
+        opacity: 1;
+    }
 }
 
 .face {
@@ -277,13 +378,8 @@ select:focus, button:focus {
     justify-content: center;
 }
 
-/* .card-audio:hover {
-    background: var(--primary);
-    transform: scale(1.1);
-} */
 .back-audio:hover {
     background: var(--primary);
-    /* transform: scale(1.1); */
     border-color: var(--primary);
     background: var(--bg);
     color: white;
@@ -291,30 +387,25 @@ select:focus, button:focus {
     left: 15px;
 }
 
-.front-audio:hover{
+.front-audio:hover {
     background: var(--primary);
     transform: scale(1.1);
-    
-
 }
-
-
 
 .front-audio { 
     transform: translateZ(1px);
 }
 
-.back-audio  { 
+.back-audio { 
     transform: rotateY(180deg) translateZ(1px);
     left: 15px;
-    /* right: 15px; */
 }
-
 
 /* NAVIGATION */
 .nav {
-    position: absolute;
-    bottom: -60px;
+    /* position: absolute; */
+    /* bottom: -0px; */
+    margin-top: 20px;
     width: 100%;
     display: flex;
     justify-content: space-between;
@@ -373,7 +464,7 @@ select:focus, button:focus {
 
 .list {
     width: 100%;
-    max-height: 400px;
+    max-height: 450px;
     overflow-y: auto;
     background: white;
     border-radius: 20px;
@@ -462,11 +553,11 @@ select:focus, button:focus {
 
 /* RESPONSIVE */
 @media (max-width: 768px) {
-    .menu-btn {
+    .main-menu-btn {
         display: block;
     }
 
-    #navMenu {
+    #mainNavMenu {
         display: none;
         flex-direction: column;
         width: 100%;
@@ -475,12 +566,8 @@ select:focus, button:focus {
         border-top: 2px solid var(--border);
     }
 
-    #navMenu.active {
+    #mainNavMenu.active {
         display: flex;
-    }
-
-    .nav-wrap {
-        position: relative;
     }
 
     h2 {
@@ -495,6 +582,16 @@ select:focus, button:focus {
     select, button {
         width: 100%;
         max-width: 300px;
+    }
+
+    .mode-buttons {
+        flex-direction: column;
+    }
+
+    .mode-btn {
+        width: 100%;
+        max-width: 300px;
+        justify-content: center;
     }
 
     .card {
@@ -595,7 +692,35 @@ select:focus, button:focus {
 </div>
 
 <div class="container">
-    <!-- FLASHCARD SECTION (ở trên) -->
+    <!-- MODE BUTTONS -->
+    <div class="mode-buttons">
+        <button class="mode-btn active" data-mode="flashcard">
+            <span class="icon">💭</span>
+            <span>Thẻ ghi nhớ</span>
+        </button>
+        <button class="mode-btn" data-mode="learn">
+            <span class="icon">📖</span>
+            <span>Học</span>
+        </button>
+        <!-- <button class="mode-btn" data-mode="test">
+            <span class="icon">📝</span>
+            <span>Kiểm tra</span>
+        </button>
+        <button class="mode-btn" data-mode="blocks">
+            <span class="icon">🧩</span>
+            <span>Blocks</span>
+        </button>
+        <button class="mode-btn" data-mode="blast">
+            <span class="icon">🚀</span>
+            <span>Blast</span>
+        </button>
+        <button class="mode-btn" data-mode="match">
+            <span class="icon">🎴</span>
+            <span>Ghép thẻ</span>
+        </button> -->
+    </div>
+
+    <!-- FLASHCARD SECTION -->
     <div class="flashcard">
         <div class="card" id="card">
             <button class="card-audio front-audio">🔊</button>
@@ -612,7 +737,7 @@ select:focus, button:focus {
         </div>
     </div>
 
-    <!-- WORD LIST (ở dưới) -->
+    <!-- WORD LIST -->
     <div>
         <div class="list-header">
             <h3>📚 Danh sách từ vựng</h3>
@@ -625,12 +750,85 @@ select:focus, button:focus {
 <script src="js/flashcard.js"></script>
 <script>
 // Menu toggle for mobile
-const menuBtn = document.getElementById('menuBtn');
-const navMenu = document.getElementById('navMenu');
+const mainMenuBtn = document.getElementById('mainMenuBtn');
+const mainNavMenu = document.getElementById('mainNavMenu');
 
-if (menuBtn && navMenu) {
-    menuBtn.addEventListener('click', () => {
-        navMenu.classList.toggle('active');
+if (mainMenuBtn && mainNavMenu) {
+    mainMenuBtn.addEventListener('click', () => {
+        mainNavMenu.classList.toggle('active');
+    });
+}
+
+// Mode buttons functionality
+const modeButtons = document.querySelectorAll('.mode-btn');
+modeButtons.forEach(btn => {
+    btn.addEventListener('click', function() {
+        // Remove active from all buttons
+        modeButtons.forEach(b => b.classList.remove('active'));
+        // Add active to clicked button
+        this.classList.add('active');
+        
+        const mode = this.dataset.mode;
+        console.log('Mode selected:', mode);
+        
+        // Add your mode switching logic here
+        // For example: redirect to different pages or change content
+        if (mode === 'learn') {
+            window.location.href = '/learn.html';
+        }
+    });
+});
+
+// Card slide animation for prev/next buttons
+const card = document.getElementById('card');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+
+function slideCard(direction) {
+    // Remove all animation classes first
+    card.classList.remove('slide-out-left', 'slide-out-right', 'slide-in-left', 'slide-in-right');
+    
+    if (direction === 'next') {
+        // Slide out to left
+        card.classList.add('slide-out-left');
+        
+        // After slide out, slide in from right
+        setTimeout(() => {
+            card.classList.remove('slide-out-left');
+            card.classList.add('slide-in-right');
+            
+            // Remove animation class after completion
+            setTimeout(() => {
+                card.classList.remove('slide-in-right');
+            }, 400);
+        }, 400);
+    } else if (direction === 'prev') {
+        // Slide out to right
+        card.classList.add('slide-out-right');
+        
+        // After slide out, slide in from left
+        setTimeout(() => {
+            card.classList.remove('slide-out-right');
+            card.classList.add('slide-in-left');
+            
+            // Remove animation class after completion
+            setTimeout(() => {
+                card.classList.remove('slide-in-left');
+            }, 400);
+        }, 400);
+    }
+}
+
+// Add click event listeners to navigation buttons
+if (nextBtn) {
+    nextBtn.addEventListener('click', () => {
+        slideCard('next');
+    });
+}
+
+if (prevBtn) {
+    prevBtn.addEventListener('click', () => {
+        slideCard('prev');
     });
 }
 </script>

@@ -1,0 +1,622 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Learn Vocabulary - Hana</title>
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary: #ff9966;
+    --primary-dark: #ff7733;
+    --primary-light: #ffb399;
+    --secondary: #ffd699;
+    --bg: #fff9f5;
+    --text: #5a3a2a;
+    --border: #ffe4cc;
+    --shadow: rgba(255, 119, 51, 0.1);
+    --success: #1f8f5f;
+    --error: #b84444;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 0;
+    margin: 0;
+}
+
+/* MAIN NAVBAR */
+.main-nav {
+    background: white;
+    box-shadow: 0 2px 8px var(--shadow);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 3px solid var(--primary-light);
+}
+
+.main-nav-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    flex-wrap: wrap;
+}
+
+.main-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 16px 20px;
+}
+
+.main-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: var(--text);
+    font-weight: 700;
+    font-size: 24px;
+}
+
+.main-logo {
+    width: 45px;
+}
+
+.main-logo img {
+    width: 100%;
+}
+
+.main-brand small {
+    display: block;
+    font-size: 12px;
+    font-weight: 400;
+    color: #999;
+}
+
+.main-menu-btn {
+    display: none;
+    background: var(--primary);
+    border: none;
+    font-size: 24px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    color: white;
+}
+
+#mainNavMenu {
+    display: flex;
+    list-style: none;
+    gap: 24px;
+    align-items: center;
+}
+
+#mainNavMenu a {
+    text-decoration: none;
+    color: var(--text);
+    font-weight: 500;
+    transition: color 0.2s;
+    padding: 8px 0;
+}
+
+#mainNavMenu a:hover {
+    color: var(--primary);
+}
+
+#mainNavMenu a.active-nav {
+    color: var(--primary);
+    border-bottom: 2px solid var(--primary);
+}
+
+/* HEADER */
+.header {
+    padding: 30px 0 20px;
+    text-align: center;
+}
+
+.badge {
+    display: inline-block;
+    background: var(--secondary);
+    color: var(--text);
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.header h2 {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 8px;
+}
+
+.header h2 span {
+    color: var(--primary);
+}
+
+.subtitle {
+    font-size: 16px;
+    color: #8a6a5a;
+}
+
+/* CONTAINER */
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px 30px 60px;
+}
+
+/* CONTROLS */
+.controls {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+select, button {
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 12px 20px;
+    border-radius: 12px;
+    border: 2px solid var(--border);
+    background: white;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+select:hover, button:hover {
+    border-color: var(--primary);
+    background: var(--primary-light);
+    color: white;
+}
+
+select:focus, button:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(255, 119, 51, 0.1);
+}
+
+#learnLang, #answerLang {
+    min-width: 180px;
+}
+
+/* PROGRESS BAR */
+.progress {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 30px;
+    background: white;
+    padding: 16px 20px;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px var(--shadow);
+    border: 2px solid var(--border);
+}
+
+.progress-bar {
+    flex: 1;
+    height: 12px;
+    background: var(--bg);
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%);
+    transition: width 0.4s ease;
+}
+
+#counter {
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--text);
+    white-space: nowrap;
+}
+
+/* CARD */
+.card {
+    background: white;
+    border-radius: 20px;
+    padding: 40px 30px;
+    box-shadow: 0 8px 24px var(--shadow);
+    border: 3px solid var(--border);
+}
+
+.card > div:first-child {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid var(--border);
+}
+
+.card > div:first-child strong {
+    font-size: 14px;
+    font-weight: 600;
+    color: #8a6a5a;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+#audioBtn {
+    background: var(--secondary);
+    border: 2px solid var(--border);
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+#audioBtn:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+    transform: scale(1.1);
+}
+
+/* QUESTION */
+.question {
+    font-size: 36px;
+    font-weight: 800;
+    margin: 30px 0;
+    color: var(--text);
+    text-align: center;
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ANSWERS */
+.answers {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 30px;
+}
+
+.answer {
+    background: var(--bg);
+    border: 3px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    transition: all 0.3s;
+    text-align: center;
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.answer:hover {
+    border-color: var(--primary);
+    background: var(--primary-light);
+    color: white;
+    transform: translateY(-4px);
+    box-shadow: 0 6px 20px var(--shadow);
+}
+
+.answer.disabled {
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+.answer.correct {
+    background: var(--success) !important;
+    border-color: var(--success) !important;
+    color: white !important;
+    animation: correctPulse 0.5s ease;
+}
+
+.answer.wrong {
+    background: var(--error) !important;
+    border-color: var(--error) !important;
+    color: white !important;
+    animation: wrongShake 0.5s ease;
+}
+
+@keyframes correctPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+@keyframes wrongShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+}
+
+/* BOTTOM ACTIONS */
+.bottom-actions {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+}
+
+.unknown-btn {
+    background: var(--secondary);
+    border: 2px solid var(--border);
+    color: var(--text);
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 14px 28px;
+    border-radius: 12px;
+    transition: all 0.3s;
+}
+
+.unknown-btn:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--shadow);
+}
+
+/* POPUP */
+.popup {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.popup.show {
+    display: flex;
+}
+
+.popup-content {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    border: 3px solid var(--primary);
+    max-width: 500px;
+    animation: popupSlide 0.4s ease;
+}
+
+@keyframes popupSlide {
+    from {
+        opacity: 0;
+        transform: translateY(-50px) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.popup-content h2 {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 16px;
+}
+
+.popup-content p {
+    font-size: 18px;
+    color: #8a6a5a;
+    margin-bottom: 24px;
+}
+
+.popup-content button {
+    background: var(--primary);
+    border: 2px solid var(--primary);
+    color: white;
+    font-size: 18px;
+    font-weight: 700;
+    padding: 14px 32px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.popup-content button:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px var(--shadow);
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .main-menu-btn {
+        display: block;
+    }
+
+    #mainNavMenu {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 2px solid var(--border);
+    }
+
+    #mainNavMenu.active {
+        display: flex;
+    }
+
+    .header h2 {
+        font-size: 24px;
+    }
+
+    .container {
+        padding: 20px 16px 60px;
+    }
+
+    .controls {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    select, button {
+        width: 100%;
+    }
+
+    .progress {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .card {
+        padding: 30px 20px;
+    }
+
+    .question {
+        font-size: 28px;
+        min-height: 60px;
+    }
+
+    .answers {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .answer {
+        font-size: 18px;
+        padding: 16px;
+        min-height: 70px;
+    }
+
+    .popup-content {
+        margin: 20px;
+        padding: 30px 20px;
+    }
+
+    .popup-content h2 {
+        font-size: 24px;
+    }
+
+    .popup-content p {
+        font-size: 16px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="main-nav">
+    <div class="main-container main-nav-wrap">
+        <a class="main-brand" href="/index.html">
+            <div class="main-logo"><img src="img/logoHanaBook.jpg" alt="Hana Logo"></div>
+            <div>
+                <small>Sách học Anh-Hàn-Việt cho trẻ em</small>
+            </div>
+        </a>
+
+        <button class="main-menu-btn" aria-label="Mở menu" id="mainMenuBtn">☰</button>
+
+        <ul id="mainNavMenu">
+            <li><a href="/index.html#trang-chu">Trang chủ</a></li>
+            <li><a href="/index.html#san-pham">Sản phẩm</a></li>
+            <li><a href="/index.html#loi-ich">Lợi ích</a></li>
+            <li><a href="/index.html#lien-he">Liên hệ</a></li>
+            <li><a href="/flashcard.html" class="active-nav">Flashcard</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- HEADER -->
+<div class="header">
+    <span class="badge">📖 Học</span>
+    <h2><span>Hana</span> Learn Vocabulary</h2>
+    <p class="subtitle">Luyện tập từ vựng với câu hỏi trắc nghiệm</p>
+</div>
+
+<div class="container">
+
+    <div class="controls">
+        <select id="learnLang">
+            <option value="en">English</option>
+            <option value="ko">Korean</option>
+            <option value="vi">Vietnamese</option>
+        </select>
+
+        <select id="answerLang">
+            <option value="vi">Vietnamese</option>
+            <option value="ko">Korean</option>
+            <option value="en">English</option>
+        </select>
+    </div>
+
+    <div class="progress">
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <span id="counter">0 / 0</span>
+    </div>
+
+    <div class="card">
+        <div>
+            <strong>Định nghĩa</strong>
+            <button id="audioBtn">🔊</button>
+        </div>
+
+        <div class="question" id="questionText">Loading...</div>
+        <div class="answers" id="answers"></div>
+
+        <div class="bottom-actions">
+            <button class="unknown-btn" id="unknownBtn">❓ Tôi không biết</button>
+        </div>
+    </div>
+</div>
+
+<div class="popup" id="popup">
+    <div class="popup-content">
+        <h2>🎉 Chúc mừng!</h2>
+        <p>Bạn đã học xong toàn bộ từ vựng</p>
+        <button onclick="location.reload()">🔄 Học lại</button>
+    </div>
+</div>
+
+<script src="js/learn.js"></script>
+<script>
+// Menu toggle for mobile
+const mainMenuBtn = document.getElementById('mainMenuBtn');
+const mainNavMenu = document.getElementById('mainNavMenu');
+
+if (mainMenuBtn && mainNavMenu) {
+    mainMenuBtn.addEventListener('click', () => {
+        mainNavMenu.classList.toggle('active');
+    });
+}
+</script>
+</body>
+</html>
