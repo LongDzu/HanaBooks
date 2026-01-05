@@ -103,9 +103,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         counter.innerText = `${String(i + 1).padStart(2, "0")} / ${vocabList.length}`;
         card.classList.remove("flipped");
+        // card.classList.remove("flipped");
+        // backText.style.display="none";
     }
 
     card.onclick = () => card.classList.toggle("flipped");
+  
 
     /* ========== CORE LOGIC ========== */
     function getText(item, side, m) {

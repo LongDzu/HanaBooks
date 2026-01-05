@@ -114,7 +114,7 @@ body {
 
 #mainNavMenu a.active-nav {
     color: var(--primary);
-    border-bottom: 2px solid var(--primary);
+    /* border-bottom: 2px solid var(--primary); */
 }
 
 /* HEADER */
@@ -502,9 +502,9 @@ select:focus, button:focus {
     transition: all 0.3s;
 }
 
-.word:last-child {
-    border-bottom: none;
-}
+/* .word:last-child {
+    /* border-bottom: none; 
+} */
 
 .word:hover {
     background: var(--bg);
@@ -647,6 +647,22 @@ select:focus, button:focus {
     font-weight: 600;
     margin-bottom: 12px;
 }
+
+.card.flipped .front-audio {
+    display: none;
+}
+
+.card.flipped .back-audio {
+    display: inline-flex;
+}
+
+.card .front-audio {
+    display: inline-flex;
+}
+
+.card .back-audio {
+    display: none;
+}
 </style>
 </head>
 
@@ -724,7 +740,7 @@ select:focus, button:focus {
     <div class="flashcard">
         <div class="card" id="card">
             <button class="card-audio front-audio">🔊</button>
-            <button class="card-audio back-audio">🔊</button>
+            <button class="card-audio back-audio" >🔊</button>
 
             <div class="face front" id="frontText">Loading...</div>
             <div class="face back" id="backText"></div>
