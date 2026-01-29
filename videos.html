@@ -1,0 +1,651 @@
+<!doctype html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Hướng Dẫn - Hana Books</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+
+        :root {
+            --primary: #ff9966;
+            --primary-dark: #ff7733;
+            --primary-light: #ffb399;
+            --secondary: #ffd699;
+            --bg: #fff9f5;
+            --text: #5a3a2a;
+            --border: #ffe4cc;
+            --shadow: rgba(255, 119, 51, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--bg);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* NAVBAR */
+        .nav {
+            background: white;
+            box-shadow: 0 2px 8px var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 3px solid var(--primary-light);
+        }
+
+        .nav-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            flex-wrap: wrap;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 700;
+            font-size: 24px;
+        }
+
+        .logo {
+            width: 45px;
+        }
+
+        .logo img {
+            width: 100%;
+        }
+
+        .brand small {
+            display: block;
+            font-size: 12px;
+            font-weight: 400;
+            color: #999;
+        }
+
+        .menu-btn {
+            display: none;
+            background: var(--primary);
+            border: none;
+            font-size: 24px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            color: white;
+        }
+
+        #navMenu {
+            display: flex;
+            list-style: none;
+            gap: 24px;
+            align-items: center;
+        }
+
+        #navMenu a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            transition: color 0.2s;
+            padding: 8px 0;
+        }
+
+        #navMenu a:hover,
+        #navMenu a.active {
+            color: var(--primary);
+        }
+
+        /* HERO */
+        .hero {
+            padding: 60px 0 40px;
+            background: linear-gradient(135deg, var(--bg) 0%, #fff5e6 100%);
+        }
+
+        .header-content {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .badge {
+            display: inline-block;
+            background: var(--secondary);
+            color: var(--text);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .title {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            line-height: 1.2;
+            color: var(--text);
+        }
+
+        .title span {
+            color: var(--primary);
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: #8a6a5a;
+        }
+
+        /* SECTION */
+        .section {
+            padding: 60px 0;
+        }
+
+        /* VIDEO GRID */
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 32px;
+            margin-top: 20px;
+        }
+
+        .video-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 16px var(--shadow);
+            border: 2px solid var(--border);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .video-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 32px var(--shadow);
+        }
+
+        .video-thumbnail {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+            background: var(--bg);
+            overflow: hidden;
+        }
+
+        .video-thumbnail img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .play-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .video-card:hover .play-overlay {
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .play-icon {
+            width: 70px;
+            height: 70px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: white;
+            transition: all 0.3s;
+            padding-left: 5px;
+        }
+
+        .video-card:hover .play-icon {
+            transform: scale(1.1);
+            background: var(--primary-dark);
+        }
+
+        .video-info {
+            padding: 24px;
+        }
+
+        .video-info h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .video-info p {
+            font-size: 15px;
+            color: #8a6a5a;
+            line-height: 1.6;
+        }
+
+        /* VIDEO POPUP */
+        .video-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 20px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .video-popup.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .video-popup-content {
+            position: relative;
+            width: 100%;
+            max-width: 1200px;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            animation: popupSlide 0.4s ease;
+        }
+
+        @keyframes popupSlide {
+            from {
+                transform: translateY(-50px) scale(0.95);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 45px;
+            height: 45px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 28px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: all 0.3s;
+        }
+
+        .close-btn:hover {
+            background: var(--primary);
+            transform: rotate(90deg);
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* FOOTER */
+        footer {
+            background: white;
+            padding: 60px 0 20px;
+            border-top: 3px solid var(--primary-light);
+            margin-top: 60px;
+        }
+
+        .footer-wrap {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 48px;
+            margin-bottom: 32px;
+        }
+
+        footer strong {
+            display: block;
+            margin-bottom: 12px;
+            font-size: 16px;
+            color: var(--text);
+        }
+
+        footer a {
+            color: #8a6a5a;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        footer a:hover {
+            color: var(--primary);
+        }
+
+        footer ul {
+            list-style: none;
+            padding: 0;
+            margin: 10px 0;
+            display: grid;
+            gap: 8px;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 24px;
+            border-top: 2px solid var(--border);
+            color: #8a6a5a;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .menu-btn {
+                display: block;
+            }
+
+            #navMenu {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                margin-top: 16px;
+                padding-top: 16px;
+                border-top: 2px solid var(--border);
+            }
+
+            #navMenu.active {
+                display: flex;
+            }
+
+            .title {
+                font-size: 32px;
+            }
+
+            .video-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+
+            .footer-wrap {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+
+            .video-popup-content {
+                margin: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="nav">
+    <div class="container nav-wrap">
+        <a class="brand" href="/#trang-chu">
+            <div class="logo"><img src="img/logoHanaBook.jpg"></div>
+            <div>
+                <small>Sách học Anh-Hàn-Việt cho trẻ em</small>
+            </div>
+        </a>
+
+        <button class="menu-btn" aria-label="Mở menu" id="menuBtn">☰</button>
+
+        <ul id="navMenu">
+            <li><a href="/#trang-chu">Trang chủ</a></li>
+            <li><a href="/#san-pham">Sản phẩm</a></li>
+            <li><a href="/#loi-ich">Lợi ích</a></li>
+            <li><a href="/#lien-he">Liên hệ</a></li>
+            <li><a href="/flashcard.html">Flashcard</a></li>
+            <li><a href="/videos.html" class="active">Video</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- HEADER -->
+<header class="hero">
+    <div class="container">
+        <div class="header-content">
+            <span class="badge">🎥 Học qua video</span>
+            <h1 class="title">
+                <span>Hana</span> Videos
+            </h1>
+            <p class="subtitle">
+                Khám phá các video hướng dẫn học tập và hoạt động vui nhộn cùng Hana
+            </p>
+        </div>
+    </div>
+</header>
+
+<!-- VIDEO GRID -->
+<section class="section">
+    <div class="container">
+        <div class="video-grid">
+            <!-- Video 1 -->
+            <div class="video-card" data-video="https://youtube.com/embed/8u8j3QbqquI?si=MYoygMwzoTg9HPbe">
+                <div class="video-thumbnail">
+                    <img src="img/logoHanaBook.jpg" alt="Video thumbnail">
+                    <div class="play-overlay">
+                        <div class="play-icon">▶</div>
+                    </div>
+                </div>
+                <div class="video-info">
+                    <h3>Alphabet Song | Learn ABC Alphabet for Children | Hana</h3>
+                    <p>Cùng bé Hana học chữ cái tiếng anh thông qua ABC song nhé</p>
+                </div>
+            </div>
+
+            <!-- Video 2 -->
+            <div class="video-card" data-video="https://youtube.com/embed/jgvrT39-CyA?si=ewKd1ielN9eBCqgP">
+                <div class="video-thumbnail">
+                    <img src="img/logoHanaBook.jpg" alt="Video thumbnail">
+                    <div class="play-overlay">
+                        <div class="play-icon">▶</div>
+                    </div>
+                </div>
+                <div class="video-info">
+                    <h3>Korean Vowel Song | Learn Korean Alphabet for Children | Hana</h3>
+                    <p>Cùng bé Hana học chữ cái tiếng hàn thông qua Korean song nhé</p>
+                </div>
+            </div>
+
+            <!-- Video 3 -->
+            <!-- <div class="video-card" data-video="https://www.youtube.com/embed/dQw4w9WgXcQ">
+                <div class="video-thumbnail">
+                    <img src="img/Bìa%20trước.png" alt="Video thumbnail">
+                    <div class="play-overlay">
+                        <div class="play-icon">▶</div>
+                    </div>
+                </div>
+                <div class="video-info">
+                    <h3>Trò chơi học từ vựng</h3>
+                    <p>Các trò chơi vui nhộn giúp bé học mà chơi, chơi mà học</p>
+                </div>
+            </div> -->
+
+            <!-- Video 4 -->
+            <!-- <div class="video-card" data-video="https://www.youtube.com/embed/dQw4w9WgXcQ">
+                <div class="video-thumbnail">
+                    <img src="img/Bìa%20trước.png" alt="Video thumbnail">
+                    <div class="play-overlay">
+                        <div class="play-icon">▶</div>
+                    </div>
+                </div>
+                <div class="video-info">
+                    <h3>Hướng dẫn phát âm chuẩn</h3>
+                    <p>Luyện phát âm tiếng Anh và tiếng Hàn cùng giáo viên bản ngữ</p>
+                </div>
+            </div> -->
+
+            <!-- Video 5 -->
+            <!-- <div class="video-card" data-video="https://www.youtube.com/embed/dQw4w9WgXcQ">
+                <div class="video-thumbnail">
+                    <img src="img/Bìa%20trước.png" alt="Video thumbnail">
+                    <div class="play-overlay">
+                        <div class="play-icon">▶</div>
+                    </div>
+                </div>
+                <div class="video-info">
+                    <h3>Câu chuyện Hana</h3>
+                    <p>Nghe kể chuyện bằng ba thứ tiếng để phát triển kỹ năng nghe</p>
+                </div>
+            </div> -->
+
+            <!-- Video 6 -->
+            <!-- <div class="video-card" data-video="https://www.youtube.com/embed/dQw4w9WgXcQ">
+                <div class="video-thumbnail">
+                    <img src="img/Bìa%20trước.png" alt="Video thumbnail">
+                    <div class="play-overlay">
+                        <div class="play-icon">▶</div>
+                    </div>
+                </div>
+                <div class="video-info">
+                    <h3>Hoạt động tương tác</h3>
+                    <p>Các hoạt động vẽ, tô màu và làm thủ công cùng bé</p>
+                </div>
+            </div> -->
+        </div>
+    </div>
+</section>
+
+<!-- VIDEO POPUP -->
+<div id="videoPopup" class="video-popup">
+    <div class="video-popup-content">
+        <button class="close-btn" id="closeVideo">×</button>
+        <div class="video-container">
+            <iframe id="videoIframe" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+    <div class="container footer-wrap">
+        <div>
+            <div class="brand" style="margin-bottom: 16px">
+                <div class="logo"><img style="width: 45px" src="img/logoHanaBook.jpg"></div>
+                <span>Hana</span>
+            </div>
+            <p style="margin-top: 0; opacity: 0.9">
+                Thương hiệu sách học ngoại ngữ hàng đầu cho trẻ em Việt Nam, mang đến trải nghiệm học tập vui vẻ và hiệu quả.
+            </p>
+        </div>
+        <nav>
+            <strong>Điều hướng</strong>
+            <ul>
+                <li><a href="/#san-pham">Sản phẩm</a></li>
+                <li><a href="/#loi-ich">Lợi ích</a></li>
+                <li><a href="/#quy-trinh">Phương pháp học</a></li>
+                <li><a href="/#lien-he">Liên hệ</a></li>
+            </ul>
+        </nav>
+        <div>
+            <strong>Liên lạc</strong>
+            <ul>
+                <li>Email: <a href="mailto:hanabooks.project@gmail.com">hanabooks.project@gmail.com</a></li>
+                <li>Hotline: <a href="tel:0123456789">0123 456 789</a></li>
+                <li>Facebook: <a href="https://www.facebook.com/hanabooks.project/">Hana Books</a></li>
+                <li>Địa chỉ: 600 Nguyễn Văn Cừ (ND), Phường An Bình, Quận Bình Thủy, Thành Phố Cần Thơ</li>
+            </ul>
+        </div>
+    </div>
+    <div class="container copyright">
+        © <span id="year">2025</span> <span>Hana</span>. Mang tri thức đến mọi em nhỏ.
+    </div>
+</footer>
+
+<script>
+// Menu toggle for mobile
+const menuBtn = document.getElementById('menuBtn');
+const navMenu = document.getElementById('navMenu');
+
+if (menuBtn && navMenu) {
+    menuBtn.addEventListener('click', () => {
+        navMenu.classList.toggle('active');
+    });
+}
+
+// Video popup functionality
+const videoCards = document.querySelectorAll('.video-card');
+const videoPopup = document.getElementById('videoPopup');
+const videoIframe = document.getElementById('videoIframe');
+const closeVideo = document.getElementById('closeVideo');
+
+videoCards.forEach(card => {
+    card.addEventListener('click', function() {
+        const videoUrl = this.dataset.video;
+        videoIframe.src = videoUrl + '?autoplay=1';
+        videoPopup.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    });
+});
+
+closeVideo.addEventListener('click', closeVideoPopup);
+
+videoPopup.addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeVideoPopup();
+    }
+});
+
+function closeVideoPopup() {
+    videoPopup.classList.remove('show');
+    videoIframe.src = '';
+    document.body.style.overflow = 'auto';
+}
+
+// Close video on ESC key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeVideoPopup();
+    }
+});
+
+// Set current year
+document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
