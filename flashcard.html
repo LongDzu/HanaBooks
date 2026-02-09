@@ -1,853 +1,829 @@
 <!doctype html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Flashcard Từ Vựng - Hana</title>
-
-<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
-
-<style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-:root {
-    --primary: #ff9966;
-    --primary-dark: #ff7733;
-    --primary-light: #ffb399;
-    --secondary: #ffd699;
-    --bg: #fff9f5;
-    --text: #5a3a2a;
-    --border: #ffe4cc;
-    --shadow: rgba(255, 119, 51, 0.1);
-}
-
-body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    padding: 0;
-    margin: 0;
-}
-
-/* MAIN NAVBAR */
-.main-nav {
-    background: white;
-    box-shadow: 0 2px 8px var(--shadow);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    border-bottom: 3px solid var(--primary-light);
-}
-
-.main-nav-wrap {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 16px 20px;
-    flex-wrap: wrap;
-}
-
-.main-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 16px 20px;
-}
-
-.main-brand {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    text-decoration: none;
-    color: var(--text);
-    font-weight: 700;
-    font-size: 24px;
-}
-
-.main-logo {
-    width: 45px;
-}
-
-.main-logo img {
-    width: 100%;
-}
-
-.main-brand small {
-    display: block;
-    font-size: 12px;
-    font-weight: 400;
-    color: #999;
-}
-
-.main-menu-btn {
-    display: none;
-    background: var(--primary);
-    border: none;
-    font-size: 24px;
-    padding: 8px 16px;
-    border-radius: 8px;
-    cursor: pointer;
-    color: white;
-}
-
-#mainNavMenu {
-    display: flex;
-    list-style: none;
-    gap: 24px;
-    align-items: center;
-}
-
-#mainNavMenu a {
-    text-decoration: none;
-    color: var(--text);
-    font-weight: 500;
-    transition: color 0.2s;
-    padding: 8px 0;
-}
-
-#mainNavMenu a:hover {
-    color: var(--primary);
-}
-
-#mainNavMenu a.active-nav {
-    color: var(--primary);
-    /* border-bottom: 2px solid var(--primary); */
-}
-
-/* HEADER */
-.header {
-    padding: 20px 0;
-    margin-bottom: 40px;
-}
-
-.header-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
-    text-align: center;
-}
-
-h2 {
-    font-size: 32px;
-    font-weight: 800;
-    color: var(--text);
-    margin-bottom: 8px;
-}
-
-h2 span {
-    color: var(--primary);
-}
-
-.subtitle {
-    font-size: 16px;
-    color: #8a6a5a;
-}
-
-/* CONTROLS */
-.controls {
-    max-width: 1200px;
-    margin: 0 auto 30px;
-    padding: 0 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 16px;
-    flex-wrap: wrap;
-}
-
-select, button {
-    font-family: inherit;
-    font-size: 16px;
-    font-weight: 600;
-    padding: 12px 20px;
-    border-radius: 12px;
-    border: 2px solid var(--border);
-    background: white;
-    color: var(--text);
-    cursor: pointer;
-    transition: all 0.3s;
-}
-
-select:hover, button:hover {
-    border-color: var(--primary);
-    background: var(--primary-light);
-    color: white;
-}
-
-select:focus, button:focus {
-    outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(255, 119, 51, 0.1);
-}
-
-#reverseBtn {
-    background: var(--primary);
-    color: white;
-    border-color: var(--primary);
-}
-
-#reverseBtn:hover {
-    background: var(--primary-dark);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px var(--shadow);
-}
-
-/* CONTAINER */
-.container {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 0 20px 60px;
-    display: flex;
-    flex-direction: column;
-    gap: 40px;
-}
-
-/* MODE BUTTONS */
-.mode-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-}
-
-.mode-btn {
-    background: white;
-    border: 2px solid var(--border);
-    color: var(--text);
-    padding: 12px 24px;
-    border-radius: 12px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.mode-btn:hover {
-    border-color: var(--primary);
-    background: var(--primary-light);
-    color: white;
-    transform: translateY(-2px);
-}
-
-.mode-btn.active {
-    background: var(--primary);
-    border-color: var(--primary);
-    color: white;
-    box-shadow: 0 4px 12px var(--shadow);
-}
-
-.mode-btn .icon {
-    font-size: 20px;
-}
-
-/* FLASHCARD SECTION */
-.flashcard {
-    width: 100%;
-    perspective: 1000px;
-    position: relative;
-    overflow: hidden;
-}
-
-.card {
-    height: 350px;
-    background: white;
-    border-radius: 20px;
-    position: relative;
-    transform-style: preserve-3d;
-    transition: transform 0.6s;
-    cursor: pointer;
-    box-shadow: 0 8px 24px var(--shadow);
-    border: 3px solid var(--border);
-}
-
-.card.flipped {
-    transform: rotateY(180deg);
-}
-
-/* Slide animations for navigation */
-.card.slide-out-left {
-    animation: slideOutLeft 0.4s ease-out forwards;
-}
-
-.card.slide-out-right {
-    animation: slideOutRight 0.4s ease-out forwards;
-}
-
-.card.slide-in-left {
-    animation: slideInLeft 0.4s ease-out forwards;
-}
-
-.card.slide-in-right {
-    animation: slideInRight 0.4s ease-out forwards;
-}
-
-@keyframes slideOutLeft {
-    from {
-        transform: translateX(0) scale(1);
-        opacity: 1;
-    }
-    to {
-        transform: translateX(-120%) scale(0.8);
-        opacity: 0;
-    }
-}
-
-@keyframes slideOutRight {
-    from {
-        transform: translateX(0) scale(1);
-        opacity: 1;
-    }
-    to {
-        transform: translateX(120%) scale(0.8);
-        opacity: 0;
-    }
-}
-
-@keyframes slideInLeft {
-    from {
-        transform: translateX(-120%) scale(0.8);
-        opacity: 0;
-    }
-    to {
-        transform: translateX(0) scale(1);
-        opacity: 1;
-    }
-}
-
-@keyframes slideInRight {
-    from {
-        transform: translateX(120%) scale(0.8);
-        opacity: 0;
-    }
-    to {
-        transform: translateX(0) scale(1);
-        opacity: 1;
-    }
-}
-
-.face {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    backface-visibility: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 48px;
-    font-weight: 800;
-    border-radius: 20px;
-    padding: 40px;
-    text-align: center;
-}
-
-.front {
-    background: white;
-    color: var(--text);
-}
-
-.back {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-    color: white;
-    transform: rotateY(180deg);
-}
-
-/* AUDIO BUTTON */
-.card-audio {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    z-index: 20;
-    border: none;
-    background: var(--secondary);
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    font-size: 24px;
-    cursor: pointer;
-    transition: all 0.3s;
-    box-shadow: 0 4px 12px var(--shadow);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.back-audio:hover {
-    background: var(--primary);
-    border-color: var(--primary);
-    background: var(--bg);
-    color: white;
-    transform: rotateY(180deg) translateZ(1px) scale(1.1);
-    left: 15px;
-}
-
-.front-audio:hover {
-    background: var(--primary);
-    transform: scale(1.1);
-}
-
-.front-audio { 
-    transform: translateZ(1px);
-}
-
-.back-audio { 
-    transform: rotateY(180deg) translateZ(1px);
-    left: 15px;
-}
-
-/* NAVIGATION */
-.nav {
-    /* position: absolute; */
-    /* bottom: -0px; */
-    margin: 10px 0px;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
-}
-
-.nav button {
-    background: var(--primary);
-    color: white;
-    border: 2px solid var(--primary);
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    font-size: 20px;
-    font-weight: 800;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-}
-
-.nav button:hover {
-    background: var(--primary-dark);
-    transform: scale(1.1);
-}
-
-.counter {
-    font-weight: 700;
-    font-size: 18px;
-    color: var(--text);
-    background: white;
-    padding: 12px 24px;
-    border-radius: 20px;
-    border: 2px solid var(--border);
-    box-shadow: 0 2px 8px var(--shadow);
-}
-
-/* WORD LIST */
-.list-header {
-    text-align: center;
-    margin: 40px 0px 25px 0px;
-}
-
-.list-header h3 {
-    font-size: 24px;
-    font-weight: 800;
-    color: var(--text);
-    margin-bottom: 8px;
-}
-
-.list-header p {
-    font-size: 14px;
-    color: #8a6a5a;
-}
-
-.list {
-    width: 100%;
-    max-height: 450px;
-    overflow-y: auto;
-    background: white;
-    border-radius: 20px;
-    padding: 20px;
-    box-shadow: 0 4px 16px var(--shadow);
-    border: 2px solid var(--border);
-}
-
-.list::-webkit-scrollbar {
-    width: 8px;
-}
-
-.list::-webkit-scrollbar-track {
-    background: var(--bg);
-    border-radius: 10px;
-}
-
-.list::-webkit-scrollbar-thumb {
-    background: var(--primary-light);
-    border-radius: 10px;
-}
-
-.list::-webkit-scrollbar-thumb:hover {
-    background: var(--primary);
-}
-
-.word {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 16px;
-    border-radius: 12px;
-    border-bottom: 2px solid var(--border);
-    cursor: pointer;
-    transition: all 0.3s;
-}
-
-/* .word:last-child {
-    /* border-bottom: none; 
-} */
-
-.word:hover {
-    background: var(--bg);
-    transform: translateX(8px);
-}
-
-.word.active {
-    background: var(--secondary);
-    border-color: var(--primary);
-}
-
-.left {
-    font-weight: 700;
-    flex: 0.2;
-    font-size: 18px;
-    color: var(--text);
-}
-
-.right {
-    flex: 1;
-    text-align: right;
-    color: #8a6a5a;
-    font-size: 16px;
-}
-
-.audio-btn {
-    border: none;
-    background: var(--primary-light);
-    border-radius: 50%;
-    width: 36px;
-    height: 36px;
-    font-size: 18px;
-    cursor: pointer;
-    transition: all 0.3s;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-}
-
-.audio-btn:hover {
-    background: var(--primary);
-    transform: scale(1.15);
-}
-
-/* RESPONSIVE */
-@media (max-width: 768px) {
-    .main-menu-btn {
-        display: block;
-    }
-
-    #mainNavMenu {
-        display: none;
-        flex-direction: column;
-        width: 100%;
-        margin-top: 16px;
-        padding-top: 16px;
-        border-top: 2px solid var(--border);
-    }
-
-    #mainNavMenu.active {
-        display: flex;
-    }
-
-    h2 {
-        font-size: 24px;
-    }
-
-    .controls {
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    select, button {
-        width: 100%;
-        max-width: 300px;
-    }
-
-    .mode-buttons {
-        flex-direction: column;
-    }
-
-    .mode-btn {
-        width: 100%;
-        max-width: 300px;
-        justify-content: center;
-    }
-
-    .card {
-        height: 280px;
-    }
-
-    .face {
-        font-size: 32px;
-        padding: 30px;
-    }
-
-    .card-audio {
-        width: 45px;
-        height: 45px;
-        font-size: 20px;
-        top: 15px;
-        right: 15px;
-    }
-
-    .nav {
-        bottom: -55px;
-    }
-
-    .counter {
-        font-size: 16px;
-        padding: 10px 20px;
-    }
-
-    .list {
-        max-height: 300px;
-    }
-
-    .word {
-        flex-wrap: wrap;
-        gap: 12px;
-    }
-
-    .left, .right {
-        flex: 100%;
-        text-align: left;
-        font-size: 16px;
-    }
-}
-
-/* BADGE */
-.badge {
-    display: inline-block;
-    background: var(--secondary);
-    color: var(--text);
-    padding: 6px 12px;
-    border-radius: 16px;
-    font-size: 13px;
-    font-weight: 600;
-    margin-bottom: 12px;
-}
-
-.card.flipped .front-audio {
-    display: none;
-}
-
-.card.flipped .back-audio {
-    display: inline-flex;
-}
-
-.card .front-audio {
-    display: inline-flex;
-}
-
-.card .back-audio {
-    display: none;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcard Từ Vựng - Hana</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #ff9966;
+            --primary-dark: #ff7733;
+            --primary-light: #ffb399;
+            --secondary: #ffd699;
+            --bg: #fff9f5;
+            --text: #5a3a2a;
+            --border: #ffe4cc;
+            --shadow: rgba(255, 119, 51, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            padding: 0;
+            margin: 0;
+        }
+
+        /* --- START NAVBAR FROM VIDEO.HTML --- */
+        .nav {
+            background: white;
+            box-shadow: 0 2px 8px var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 3px solid var(--primary-light);
+        }
+
+        .nav-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            flex-wrap: wrap;
+            max-width: 1200px; /* Thêm max-width để giống container bên video */
+            margin: 0 auto;   /* Căn giữa */
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 700;
+            font-size: 24px;
+        }
+
+        .logo {
+            width: 45px;
+        }
+
+        .logo img {
+            width: 100%;
+        }
+
+        .brand small {
+            display: block;
+            font-size: 12px;
+            font-weight: 400;
+            color: #999;
+        }
+
+        .menu-btn {
+            display: none;
+            background: var(--primary);
+            border: none;
+            font-size: 24px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            color: white;
+        }
+
+        #navMenu {
+            display: flex;
+            list-style: none;
+            gap: 24px;
+            align-items: center;
+        }
+
+        #navMenu a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            transition: color 0.2s;
+            padding: 8px 0;
+        }
+
+        #navMenu a:hover,
+        #navMenu a.active {
+            color: var(--primary);
+        }
+        /* --- END NAVBAR FROM VIDEO.HTML --- */
+
+        /* HEADER (Old Flashcard Header) */
+        .header {
+            padding: 20px 0;
+            margin-bottom: 40px;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        h2 span {
+            color: var(--primary);
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: #8a6a5a;
+        }
+
+        /* CONTROLS */
+        .controls {
+            max-width: 1200px;
+            margin: 0 auto 30px;
+            padding: 0 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        select, button {
+            font-family: inherit;
+            font-size: 16px;
+            font-weight: 600;
+            padding: 12px 20px;
+            border-radius: 12px;
+            border: 2px solid var(--border);
+            background: white;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        select:hover, button:hover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            color: white;
+        }
+
+        select:focus, button:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(255, 119, 51, 0.1);
+        }
+
+        #reverseBtn {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        #reverseBtn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        /* CONTAINER */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px 60px;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        /* MODE BUTTONS */
+        .mode-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .mode-btn {
+            background: white;
+            border: 2px solid var(--border);
+            color: var(--text);
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .mode-btn:hover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .mode-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .mode-btn .icon {
+            font-size: 20px;
+        }
+
+        /* FLASHCARD SECTION */
+        .flashcard {
+            width: 100%;
+            perspective: 1000px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card {
+            height: 350px;
+            background: white;
+            border-radius: 20px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            cursor: pointer;
+            box-shadow: 0 8px 24px var(--shadow);
+            border: 3px solid var(--border);
+        }
+
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        /* Slide animations for navigation */
+        .card.slide-out-left {
+            animation: slideOutLeft 0.4s ease-out forwards;
+        }
+
+        .card.slide-out-right {
+            animation: slideOutRight 0.4s ease-out forwards;
+        }
+
+        .card.slide-in-left {
+            animation: slideInLeft 0.4s ease-out forwards;
+        }
+
+        .card.slide-in-right {
+            animation: slideInRight 0.4s ease-out forwards;
+        }
+
+        @keyframes slideOutLeft {
+            from {
+                transform: translateX(0) scale(1);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(-120%) scale(0.8);
+                opacity: 0;
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0) scale(1);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(120%) scale(0.8);
+                opacity: 0;
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                transform: translateX(-120%) scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(120%) scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: 800;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .front {
+            background: white;
+            color: var(--text);
+        }
+
+        .back {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            transform: rotateY(180deg);
+        }
+
+        /* AUDIO BUTTON */
+        .card-audio {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 20;
+            border: none;
+            background: var(--secondary);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px var(--shadow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .back-audio:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            background: var(--bg);
+            color: white;
+            transform: rotateY(180deg) translateZ(1px) scale(1.1);
+            left: 15px;
+        }
+
+        .front-audio:hover {
+            background: var(--primary);
+            transform: scale(1.1);
+        }
+
+        .front-audio { 
+            transform: translateZ(1px);
+        }
+
+        .back-audio { 
+            transform: rotateY(180deg) translateZ(1px);
+            left: 15px;
+        }
+
+        /* NAVIGATION */
+        .nav-controls { /* Renamed class to avoid conflict with .nav of Navbar */
+            /* position: absolute; */
+            /* bottom: -0px; */
+            margin: 10px 0px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .nav-controls button {
+            background: var(--primary);
+            color: white;
+            border: 2px solid var(--primary);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 20px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+
+        .nav-controls button:hover {
+            background: var(--primary-dark);
+            transform: scale(1.1);
+        }
+
+        .counter {
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--text);
+            background: white;
+            padding: 12px 24px;
+            border-radius: 20px;
+            border: 2px solid var(--border);
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+
+        /* WORD LIST */
+        .list-header {
+            text-align: center;
+            margin: 40px 0px 25px 0px;
+        }
+
+        .list-header h3 {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .list-header p {
+            font-size: 14px;
+            color: #8a6a5a;
+        }
+
+        .list {
+            width: 100%;
+            max-height: 450px;
+            overflow-y: auto;
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 16px var(--shadow);
+            border: 2px solid var(--border);
+        }
+
+        .list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .list::-webkit-scrollbar-track {
+            background: var(--bg);
+            border-radius: 10px;
+        }
+
+        .list::-webkit-scrollbar-thumb {
+            background: var(--primary-light);
+            border-radius: 10px;
+        }
+
+        .list::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+
+        .word {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            border-radius: 12px;
+            border-bottom: 2px solid var(--border);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        /* .word:last-child {
+            /* border-bottom: none; 
+        } */
+
+        .word:hover {
+            background: var(--bg);
+            transform: translateX(8px);
+        }
+
+        .word.active {
+            background: var(--secondary);
+            border-color: var(--primary);
+        }
+
+        .left {
+            font-weight: 700;
+            flex: 0.2;
+            font-size: 18px;
+            color: var(--text);
+        }
+
+        .right {
+            flex: 1;
+            text-align: right;
+            color: #8a6a5a;
+            font-size: 16px;
+        }
+
+        .audio-btn {
+            border: none;
+            background: var(--primary-light);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+
+        .audio-btn:hover {
+            background: var(--primary);
+            transform: scale(1.15);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            /* --- NAVBAR RESPONSIVE FROM VIDEO.HTML --- */
+            .menu-btn {
+                display: block;
+            }
+
+            #navMenu {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                margin-top: 16px;
+                padding-top: 16px;
+                border-top: 2px solid var(--border);
+            }
+
+            #navMenu.active {
+                display: flex;
+            }
+            /* --- END NAVBAR RESPONSIVE --- */
+
+            h2 {
+                font-size: 24px;
+            }
+
+            .controls {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            /* select, button {
+                width: 100%;
+                max-width: 300px;
+            } */
+
+            /* .mode-buttons {
+                flex-direction: column;
+            } */
+
+            .mode-btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+
+            .card {
+                height: 280px;
+            }
+
+            .face {
+                font-size: 32px;
+                padding: 30px;
+            }
+
+            .card-audio {
+                width: 45px;
+                height: 45px;
+                font-size: 20px;
+                top: 15px;
+                right: 15px;
+            }
+
+            /* Adjusted since we renamed class from .nav to .nav-controls to avoid conflict */
+            .nav-controls {
+                bottom: -55px;
+            }
+
+            .counter {
+                font-size: 16px;
+                padding: 10px 20px;
+            }
+
+            .list {
+                max-height: 300px;
+            }
+
+            .word {
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+
+            .left, .right {
+                flex: 100%;
+                text-align: left;
+                font-size: 16px;
+            }
+        }
+
+        /* BADGE */
+        .badge {
+            display: inline-block;
+            background: var(--secondary);
+            color: var(--text);
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .card.flipped .front-audio {
+            display: none;
+        }
+
+        .card.flipped .back-audio {
+            display: inline-flex;
+        }
+
+        .card .front-audio {
+            display: inline-flex;
+        }
+
+        .card .back-audio {
+            display: none;
+        }
+    </style>
 </head>
 
 <body>
 
-<!-- NAVBAR -->
-<nav class="main-nav">
-    <div class="main-container main-nav-wrap">
-        <a class="main-brand" href="/index.html">
-            <div class="main-logo"><img src="img/logoHanaBook.jpg" alt="Hana Logo"></div>
-            <div>
-                <small>Sách học Anh-Hàn-Việt cho trẻ em</small>
-            </div>
-        </a>
-
-        <button class="main-menu-btn" aria-label="Mở menu" id="mainMenuBtn">☰</button>
-
-        <ul id="mainNavMenu">
-            <li><a href="/index.html#trang-chu">Trang chủ</a></li>
-            <li><a href="/index.html#san-pham">Sản phẩm</a></li>
-            <li><a href="/index.html#loi-ich">Lợi ích</a></li>
-            <li><a href="/index.html#lien-he">Liên hệ</a></li>
-            <li><a href="/flashcard.html" class="active-nav">Flashcard</a></li>
-            <li><a href="/videos.html">Video</a></li>
-        </ul>
-    </div>
-</nav>
-
-<div class="header">
-    <div class="header-content">
-        <span class="badge">🌟 Học vui, nhớ lâu</span>
-        <h2><span>Hana</span> Flashcard</h2>
-        <p class="subtitle">Học từ vựng đa ngôn ngữ hiệu quả với phương pháp flashcard</p>
-    </div>
-</div>
-
-<div class="controls">
-    <select id="mode">
-        <option value="en-ko">English → Korea</option>
-        <option value="en-vi">English → Vietnamese</option>
-        <option value="ko-vi">Korea → Vietnamese</option>
-    </select>
-    <button id="reverseBtn">🔄 Đảo chiều</button>
-</div>
-
-<div class="container">
-    <!-- MODE BUTTONS -->
-    <div class="mode-buttons">
-        <button class="mode-btn active" data-mode="flashcard">
-            <span class="icon">💭</span>
-            <span>Thẻ ghi nhớ</span>
-        </button>
-        <button class="mode-btn" data-mode="learn">
-            <span class="icon">📖</span>
-            <span>Học</span>
-        </button>
-        <!-- <button class="mode-btn" data-mode="test">
-            <span class="icon">📝</span>
-            <span>Kiểm tra</span>
-        </button>
-        <button class="mode-btn" data-mode="blocks">
-            <span class="icon">🧩</span>
-            <span>Blocks</span>
-        </button>
-        <button class="mode-btn" data-mode="blast">
-            <span class="icon">🚀</span>
-            <span>Blast</span>
-        </button>
-        <button class="mode-btn" data-mode="match">
-            <span class="icon">🎴</span>
-            <span>Ghép thẻ</span>
-        </button> -->
-    </div>
-
-    <!-- FLASHCARD SECTION -->
-    <div class="flashcard">
-        <div class="card" id="card">
-            <button class="card-audio front-audio">🔊</button>
-            <button class="card-audio back-audio" >🔊</button>
-
-            <div class="face front" id="frontText">Loading...</div>
-            <div class="face back" id="backText"></div>
-        </div>
-
-        <div class="nav">
-            <button id="prevBtn">&lt;</button>
-            <div class="counter" id="counter">0 / 0</div>
-            <button id="nextBtn">&gt;</button>
-        </div>
-    </div>
-
-    <!-- WORD LIST -->
-    <div>
-        <div class="list-header">
-            <h3>📚 Danh sách từ vựng</h3>
-            <p>Nhấn vào từ để xem flashcard tương ứng</p>
-        </div>
-        <div class="list" id="wordList"></div>
-    </div>
-</div>
-
-<script src="js/flashcard.js"></script>
-<script>
-// Menu toggle for mobile
-const mainMenuBtn = document.getElementById('mainMenuBtn');
-const mainNavMenu = document.getElementById('mainNavMenu');
-
-if (mainMenuBtn && mainNavMenu) {
-    mainMenuBtn.addEventListener('click', () => {
-        mainNavMenu.classList.toggle('active');
-    });
-}
-
-// Mode buttons functionality
-const modeButtons = document.querySelectorAll('.mode-btn');
-modeButtons.forEach(btn => {
-    btn.addEventListener('click', function() {
-        // Remove active from all buttons
-        modeButtons.forEach(b => b.classList.remove('active'));
-        // Add active to clicked button
-        this.classList.add('active');
-        
-        const mode = this.dataset.mode;
-        console.log('Mode selected:', mode);
-        
-        // Add your mode switching logic here
-        // For example: redirect to different pages or change content
-        if (mode === 'learn') {
-            window.location.href = '/learn.html';
-        }
-    });
-});
-
-// Card slide animation for prev/next buttons
-const card = document.getElementById('card');
-const prevBtn = document.getElementById('prevBtn');
-const nextBtn = document.getElementById('nextBtn');
-
-function slideCard(direction) {
-    // Remove all animation classes first
-    card.classList.remove('slide-out-left', 'slide-out-right', 'slide-in-left', 'slide-in-right');
+    <nav class="nav">
+        <div class="nav-wrap">
+            <a class="brand" href="/#trang-chu">
+                <div class="logo"><img src="img/logoHanaBook.jpg"></div>
+                <div>
+                    <small>Sách học Anh-Hàn-Việt cho trẻ em</small>
+                </div>
+            </a>
     
-    if (direction === 'next') {
-        // Slide out to left
-        card.classList.add('slide-out-left');
-        
-        // After slide out, slide in from right
-        setTimeout(() => {
-            card.classList.remove('slide-out-left');
-            card.classList.add('slide-in-right');
-            
-            // Remove animation class after completion
-            setTimeout(() => {
-                card.classList.remove('slide-in-right');
-            }, 400);
-        }, 400);
-    } else if (direction === 'prev') {
-        // Slide out to right
-        card.classList.add('slide-out-right');
-        
-        // After slide out, slide in from left
-        setTimeout(() => {
-            card.classList.remove('slide-out-right');
-            card.classList.add('slide-in-left');
-            
-            // Remove animation class after completion
-            setTimeout(() => {
-                card.classList.remove('slide-in-left');
-            }, 400);
-        }, 400);
-    }
-}
+            <button class="menu-btn" aria-label="Mở menu" id="menuBtn">☰</button>
+    
+            <ul id="navMenu">
+                <li><a href="/#trang-chu">Trang chủ</a></li>
+                <li><a href="/#san-pham">Sản phẩm</a></li>
+                <li><a href="/#loi-ich">Lợi ích</a></li>
+                <li><a href="/#lien-he">Liên hệ</a></li>
+                <li><a href="/flashcard.html" class="active">Flashcard</a></li>
+                <li><a href="/videos.html">Video</a></li>
+            </ul>
+        </div>
+    </nav>
 
-// Add click event listeners to navigation buttons
-if (nextBtn) {
-    nextBtn.addEventListener('click', () => {
-        slideCard('next');
-    });
-}
+    <div class="header">
+        <div class="header-content">
+            <span class="badge">🌟 Học vui, nhớ lâu</span>
+            <h2><span>Hana</span> Flashcard</h2>
+            <p class="subtitle">Học từ vựng đa ngôn ngữ hiệu quả với phương pháp flashcard</p>
+        </div>
+    </div>
 
-if (prevBtn) {
-    prevBtn.addEventListener('click', () => {
-        slideCard('prev');
-    });
-}
-</script>
+    <div class="controls">
+        <select id="mode">
+            <option value="en-ko">English → Korea</option>
+            <option value="en-vi">English → Vietnamese</option>
+            <option value="ko-vi">Korea → Vietnamese</option>
+        </select>
+        <button id="reverseBtn">🔄 Đảo chiều</button>
+    </div>
+
+    <div class="container">
+        <div class="mode-buttons">
+            <button class="mode-btn active" data-mode="flashcard">
+                <span class="icon">💭</span>
+                <span>Thẻ ghi nhớ</span>
+            </button>
+            <button class="mode-btn" data-mode="learn">
+                <span class="icon">📖</span>
+                <span>Học</span>
+            </button>
+        </div>
+
+        <div class="flashcard">
+            <div class="card" id="card">
+                <button class="card-audio front-audio">🔊</button>
+                <button class="card-audio back-audio" >🔊</button>
+
+                <div class="face front" id="frontText">Loading...</div>
+                <div class="face back" id="backText"></div>
+            </div>
+
+            <div class="nav-controls">
+                <button id="prevBtn">&lt;</button>
+                <div class="counter" id="counter">0 / 0</div>
+                <button id="nextBtn">&gt;</button>
+            </div>
+        </div>
+
+        <div>
+            <div class="list-header">
+                <h3>📚 Danh sách từ vựng</h3>
+                <p>Nhấn vào từ để xem flashcard tương ứng</p>
+            </div>
+            <div class="list" id="wordList"></div>
+        </div>
+    </div>
+
+    <script src="js/flashcard.js"></script>
+    <script>
+        // Menu toggle for mobile (UPDATED for new Navbar ID)
+        const menuBtn = document.getElementById('menuBtn');
+        const navMenu = document.getElementById('navMenu');
+
+        if (menuBtn && navMenu) {
+            menuBtn.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+            });
+        }
+
+        // Mode buttons functionality
+        const modeButtons = document.querySelectorAll('.mode-btn');
+        modeButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Remove active from all buttons
+                modeButtons.forEach(b => b.classList.remove('active'));
+                // Add active to clicked button
+                this.classList.add('active');
+                
+                const mode = this.dataset.mode;
+                console.log('Mode selected:', mode);
+                
+                // Add your mode switching logic here
+                // For example: redirect to different pages or change content
+                if (mode === 'learn') {
+                    window.location.href = '/learn.html';
+                }
+            });
+        });
+
+        // Card slide animation for prev/next buttons
+        const card = document.getElementById('card');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        function slideCard(direction) {
+            // Remove all animation classes first
+            card.classList.remove('slide-out-left', 'slide-out-right', 'slide-in-left', 'slide-in-right');
+            
+            if (direction === 'next') {
+                // Slide out to left
+                card.classList.add('slide-out-left');
+                
+                // After slide out, slide in from right
+                setTimeout(() => {
+                    card.classList.remove('slide-out-left');
+                    card.classList.add('slide-in-right');
+                    
+                    // Remove animation class after completion
+                    setTimeout(() => {
+                        card.classList.remove('slide-in-right');
+                    }, 400);
+                }, 400);
+            } else if (direction === 'prev') {
+                // Slide out to right
+                card.classList.add('slide-out-right');
+                
+                // After slide out, slide in from left
+                setTimeout(() => {
+                    card.classList.remove('slide-out-right');
+                    card.classList.add('slide-in-left');
+                    
+                    // Remove animation class after completion
+                    setTimeout(() => {
+                        card.classList.remove('slide-in-left');
+                    }, 400);
+                }, 400);
+            }
+        }
+
+        // Add click event listeners to navigation buttons
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => {
+                slideCard('next');
+            });
+        }
+
+        if (prevBtn) {
+            prevBtn.addEventListener('click', () => {
+                slideCard('prev');
+            });
+        }
+    </script>
 </body>
 </html>
