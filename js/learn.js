@@ -22,7 +22,8 @@ document.addEventListener("DOMContentLoaded", () => {
     let current;
     let locked = false;
 
-    fetch("flashcard.xlsx")
+    function loadFlashcardData(){
+        fetch("flashcard.xlsx")
         .then(r => r.arrayBuffer())
         .then(data => {
             const wb = XLSX.read(data, { type: "array" });
@@ -31,6 +32,8 @@ document.addEventListener("DOMContentLoaded", () => {
             syncSelectOptions();
             resetLearning();
         });
+    }
+    
 
     function syncSelectOptions() {
         const learnVal = learnLang.value;
@@ -155,4 +158,84 @@ document.addEventListener("DOMContentLoaded", () => {
     function shuffle(arr) {
         return arr.sort(() => Math.random() - 0.5);
     }
+
+    const validCodes = [
+    "HANA7XK9Q2L","HANAZ4M8T1P","HANAQ9L2V7R","HANA3N8WX5K","HANAY6T2B9J",
+    "HANAR1P7Z4M","HANA8KQ3L6X","HANAV5M9T2C","HANAW2X7R8N","HANA6ZL4P1T",
+    "HANAT9Q5M3B","HANAP4V8K2R","HANAX7N1L9C","HANA2M6T8QK","HANAL9R3X5V",
+    "HANA5B7P2ZN","HANAQ1T8M4L","HANA8V3K6RX","HANAM2L7Q9P","HANA4X8T1BZ"
+];
+
+const lockScreen = document.getElementById("lockScreen");
+const unlockBtn = document.getElementById("unlockBtn");
+const passwordInput = document.getElementById("passwordInput");
+const errorMsg = document.getElementById("errorMsg");
+
+// Kiểm tra nếu đã login trong session
+if (sessionStorage.getItem("flashcardUnlocked") === "true") {
+    lockScreen.style.display = "none";
+    loadFlashcardData();
+}
+
+unlockBtn.addEventListener("click", () => {
+    const enteredCode = passwordInput.value.trim();
+
+    if (!enteredCode) {
+        errorMsg.textContent = "❌ Không được để trống!";
+        triggerShake();
+        return;
+    }
+
+    if (validCodes.includes(enteredCode)) {
+        sessionStorage.setItem("flashcardUnlocked", "true");
+        lockScreen.style.display = "none";
+        loadFlashcardData();
+    } else {
+        errorMsg.textContent = "❌ Mật mã không đúng!";
+        triggerShake();
+    }
+});
+
+// Nhấn Enter để mở khóa
+passwordInput.addEventListener("keypress", function(e) {
+    if (e.key === "Enter") {
+        unlockBtn.click();
+    }
+});
+
+document.addEventListener("contextmenu", function(e) {
+    e.preventDefault();
+});
+
+document.addEventListener("keydown", function(e) {
+
+    // F12
+    if (e.key === "F12") {
+        e.preventDefault();
+    }
+
+    // Ctrl + Shift + I
+    if (e.ctrlKey && e.shiftKey && e.key === "I") {
+        e.preventDefault();
+    }
+
+    // Ctrl + Shift + J
+    if (e.ctrlKey && e.shiftKey && e.key === "J") {
+        e.preventDefault();
+    }
+
+    // Ctrl + U (view source)
+    if (e.ctrlKey && e.key === "u") {
+        e.preventDefault();
+    }
+});
+
+function triggerShake() {
+    unlockBtn.classList.remove("shake"); 
+    void unlockBtn.offsetWidth; // reset animation
+    unlockBtn.classList.add("shake");
+   passwordInput.value = "";
+}
+
+
 });

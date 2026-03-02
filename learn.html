@@ -198,6 +198,48 @@ select:focus, button:focus {
     min-width: 180px;
 }
 
+/* MODE BUTTONS */
+        .mode-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .mode-btn {
+            background: white;
+            border: 2px solid var(--border);
+            color: var(--text);
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .mode-btn:hover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .mode-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .mode-btn .icon {
+            font-size: 20px;
+        }
+
 /* PROGRESS BAR */
 .progress {
     display: flex;
@@ -527,10 +569,66 @@ select:focus, button:focus {
         font-size: 16px;
     }
 }
+
+        @keyframes shake {
+    0% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(6px); }
+    60% { transform: translateX(-6px); }
+    80% { transform: translateX(6px); }
+    100% { transform: translateX(0); }
+}
+
+.shake {
+    animation: shake 0.35s ease;
+}
 </style>
 </head>
 
 <body>
+    <div id="lockScreen" style="
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+">
+    <div style="
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        text-align: center;
+        width: 90%;
+        max-width: 400px;
+    ">
+        <h3>🔐 Hãy nhập mật mã để học</h3>
+        <input id="passwordInput" type="password" placeholder="Nhập mật mã..."
+            style="
+                width: 100%;
+                padding: 12px;
+                margin-top: 20px;
+                border-radius: 10px;
+                border: 2px solid #eee;
+                font-size: 16px;
+            ">
+        <button id="unlockBtn"
+            style="
+                margin-top: 15px;
+                padding: 12px 20px;
+                border-radius: 10px;
+                border: none;
+                background: #ff9966;
+                color: white;
+                font-weight: bold;
+                cursor: pointer;
+            ">
+            Mở khóa
+        </button>
+        <p id="errorMsg" style="color:red;margin-top:10px;"></p>
+    </div>
+</div>
 
 <!-- NAVBAR -->
 <nav class="main-nav">
@@ -547,10 +645,11 @@ select:focus, button:focus {
         <ul id="mainNavMenu">
             <li><a href="/index.html#trang-chu">Trang chủ</a></li>
             <li><a href="/index.html#san-pham">Sản phẩm</a></li>
-            <li><a href="/index.html#loi-ich">Lợi ích</a></li>
-            <li><a href="/index.html#lien-he">Liên hệ</a></li>
             <li><a href="/flashcard.html" class="active-nav">Flashcard</a></li>
             <li><a href="/videos.html">Video</a></li>
+            <li><a href="/index.html#loi-ich">Lợi ích</a></li>
+            <li><a href="/index.html#lien-he">Liên hệ</a></li>
+            
             
         </ul>
     </div>
@@ -564,6 +663,16 @@ select:focus, button:focus {
 </div>
 
 <div class="container">
+    <div class="mode-buttons">
+            <button class="mode-btn " data-mode="flashcard">
+                <span class="icon">💭</span>
+                <span>Thẻ ghi nhớ</span>
+            </button>
+            <button class="mode-btn active" data-mode="learn">
+                <span class="icon">📖</span>
+                <span>Học</span>
+            </button>
+        </div>
 
     <div class="controls">
         <select id="learnLang">
@@ -620,6 +729,96 @@ if (mainMenuBtn && mainNavMenu) {
         mainNavMenu.classList.toggle('active');
     });
 }
+// ==== PASSWORD SYSTEM ====
+
+// const validCodes = [
+//     "HANA001","HANA002","HANA003","HANA004","HANA005",
+//     "HANA006","HANA007","HANA008","HANA009","HANA010",
+//     "HANA011","HANA012","HANA013","HANA014","HANA015",
+//     "HANA016","HANA017","HANA018","HANA019","HANA020"
+// ];
+
+// const lockScreen = document.getElementById("lockScreen");
+// const unlockBtn = document.getElementById("unlockBtn");
+// const passwordInput = document.getElementById("passwordInput");
+// const errorMsg = document.getElementById("errorMsg");
+
+// // Kiểm tra nếu đã login trong session
+// if (sessionStorage.getItem("flashcardUnlocked") === "true") {
+//     lockScreen.style.display = "none";
+// }
+
+// unlockBtn.addEventListener("click", () => {
+//     const enteredCode = passwordInput.value.trim();
+
+//     if (validCodes.includes(enteredCode)) {
+//         sessionStorage.setItem("flashcardUnlocked", "true");
+//         lockScreen.style.display = "none";
+//     }else if(enteredCode===null){
+//         errorMsg.textContent = "❌ Không được để trống!";
+
+//     } 
+//     else {
+//         errorMsg.textContent = "❌ Mật mã không đúng!";
+//     }
+// });
+
+// // Nhấn Enter để mở khóa
+// passwordInput.addEventListener("keypress", function(e) {
+//     if (e.key === "Enter") {
+//         unlockBtn.click();
+//     }
+// });
+
+// document.addEventListener("contextmenu", function(e) {
+//     e.preventDefault();
+// });
+
+// document.addEventListener("keydown", function(e) {
+
+//     // F12
+//     if (e.key === "F12") {
+//         e.preventDefault();
+//     }
+
+//     // Ctrl + Shift + I
+//     if (e.ctrlKey && e.shiftKey && e.key === "I") {
+//         e.preventDefault();
+//     }
+
+//     // Ctrl + Shift + J
+//     if (e.ctrlKey && e.shiftKey && e.key === "J") {
+//         e.preventDefault();
+//     }
+
+//     // Ctrl + U (view source)
+//     if (e.ctrlKey && e.key === "u") {
+//         e.preventDefault();
+//     }
+// });
+
+// Mode buttons functionality
+        const modeButtons = document.querySelectorAll('.mode-btn');
+        modeButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Remove active from all buttons
+                modeButtons.forEach(b => b.classList.remove('active'));
+                // Add active to clicked button
+                this.classList.add('active');
+                
+                const mode = this.dataset.mode;
+                console.log('Mode selected:', mode);
+                
+                // Add your mode switching logic here
+                // For example: redirect to different pages or change content
+                if (mode === 'learn') {
+                    window.location.href = '/learn.html';
+                }
+                if (mode === 'flashcard') {
+                    window.location.href = '/flashcard.html';
+                }
+            });
+        });
 </script>
 </body>
 </html>
