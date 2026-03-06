@@ -158,25 +158,54 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
 
-    const validCodes = [
-    "HANA7XK9Q2L","HANAZ4M8T1P","HANAQ9L2V7R","HANA3N8WX5K","HANAY6T2B9J",
-    "HANAR1P7Z4M","HANA8KQ3L6X","HANAV5M9T2C","HANAW2X7R8N","HANA6ZL4P1T",
-    "HANAT9Q5M3B","HANAP4V8K2R","HANAX7N1L9C","HANA2M6T8QK","HANAL9R3X5V",
-    "HANA5B7P2ZN","HANAQ1T8M4L","HANA8V3K6RX","HANAM2L7Q9P","HANA4X8T1BZ"
-];
 
+let validCodes = [];
+async function loadValidCodes() {
+    const response = await fetch("mvnskfnehcvlsiddfsdjlnfwei.txt");
+    const text = await response.text();
+
+    return text.split("\n").map(v => v.trim());
+}
+async function splitHash(code) {
+
+    const part1 = code.slice(0, -4); // length - 4
+    const part2 = code.slice(-4);    // 4 ký tự cuối
+
+    const hash1 = await sha256(part1);
+    const hash2 = await sha256(part2);
+
+    return hash1 + hash2;
+}
+async function sha256(text) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(text);
+
+    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+
+    return hashArray.map(b =>
+        b.toString(16).padStart(2, "0")
+    ).join("");
+}
 const lockScreen = document.getElementById("lockScreen");
 const unlockBtn = document.getElementById("unlockBtn");
 const passwordInput = document.getElementById("passwordInput");
 const errorMsg = document.getElementById("errorMsg");
 
-// Kiểm tra nếu đã login trong session
+
+
+loadValidCodes().then(data => {
+    validCodes = data;
+});
+
 if (sessionStorage.getItem("flashcardUnlocked") === "true") {
     lockScreen.style.display = "none";
     loadFlashcardData();
 }
 
-unlockBtn.addEventListener("click", () => {
+unlockBtn.addEventListener("click", async () => {
+
     const enteredCode = passwordInput.value.trim();
 
     if (!enteredCode) {
@@ -185,16 +214,22 @@ unlockBtn.addEventListener("click", () => {
         return;
     }
 
-    if (validCodes.includes(enteredCode)) {
+    const hashedCode = await splitHash(enteredCode);
+
+    if (validCodes.includes(hashedCode)) {
+
         sessionStorage.setItem("flashcardUnlocked", "true");
         lockScreen.style.display = "none";
         loadFlashcardData();
+
     } else {
+
         errorMsg.textContent = "❌ Mật mã không đúng!";
         triggerShake();
-    }
-});
 
+    }
+
+});
 // Nhấn Enter để mở khóa
 passwordInput.addEventListener("keypress", function(e) {
     if (e.key === "Enter") {

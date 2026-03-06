@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <input type="text" id="inputText" placeholder="Nhập mã">
+    <input type="submit" value="Hash" onclick="testHash()">
+
+    <p id="result"></p>
+
+<script>
+
+    async function sha256(text) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(text);
+
+    const buffer = await crypto.subtle.digest("SHA-256", data);
+
+    const hashArray = Array.from(new Uint8Array(buffer));
+
+    return hashArray.map(b =>
+        b.toString(16).padStart(2, "0")
+    ).join("");
+}
+
+async function splitHash(code) {
+
+    const part1 = code.slice(0, -4);  // từ đầu tới length -4
+    const part2 = code.slice(-4);     // 4 ký tự cuối
+    console.log("part1: "+part1);
+    console.log("part2: "+part2);
+    const hash1 = await sha256(part1);
+    const hash2 = await sha256(part2);
+    console.log("HASH part1: "+hash1);
+    console.log("HASH part2: "+hash2);
+    return hash1 + hash2;
+}
+
+async function testHash() {
+
+    const text = document.getElementById("inputText").value.trim();
+
+    if (!text) {
+        alert("Không được để trống");
+        return;
+    }
+
+    const result = await splitHash(text);
+
+    document.getElementById("result").textContent = result;
+
+    console.log(result);
+}
+</script>
+</body>
+</html>
